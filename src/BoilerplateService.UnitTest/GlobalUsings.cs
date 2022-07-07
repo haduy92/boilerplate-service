@@ -1,0 +1,11 @@
+global using Xunit;
+global using BoilerplateService.Repositories.Interfaces;
+global using BoilerplateService.Services.Interfaces;
+global using NSubstitute;
+global using FluentAssertions;
+global using BoilerplateService.Services;
+global using AutoMapper;
+global using BoilerplateService.Infrastructures.AutoMapper;
+global using AutoFixture;
+global using BoilerplateService.UnitTest.Fixtures;
+global using BoilerplateService.Models.Entities;

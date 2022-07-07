@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  boilerplate-service-app:
+    image: ${DOCKER_REGISTRY-}boilerplate-service
+    container_name: boilerplate-service-app
+    build:
+      context: .
+      dockerfile: ./BoilerplateService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:7001
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - AWS_DEFAULT_REGION=eu-west-1
+      - DynamoDb__LocalServiceUrl=http://boilerplate-service-db:8000
+    ports:
+      - 7001:7001
+    depends_on:
+      - boilerplate-service-db
+
+  boilerplate-service-test:
+    image: ${DOCKER_REGISTRY-}boilerplate-test
+    container_name: boilerplate-service-test
+    build:
+      context: .
+      target: test
+      dockerfile: ./BoilerplateService/Dockerfile
+
+  boilerplate-service-db:
+    image: "amazon/dynamodb-local:1.18.0"
+    container_name: boilerplate-service-db
+    hostname: boilerplate-service-db
+    volumes:
+      - app_dynamodb:/home/dynamodblocal
+    working_dir: /home/dynamodblocal
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ."
+    restart: unless-stopped
+
+volumes:
+  app_dynamodb:
+    driver: local
